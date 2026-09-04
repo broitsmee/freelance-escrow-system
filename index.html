@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Freelance Escrow DApp - Secure Web3 Payments</title>
+  <!-- Ethers.js v5 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .glass {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-blue-500 selection:text-white">
+
+  <!-- Background Decorative Glows -->
+  <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[500px] bg-gradient-to-tr from-blue-600/20 via-indigo-500/10 to-purple-600/20 blur-[120px] pointer-events-none -z-10"></div>
+
+  <!-- Navbar -->
+  <nav class="sticky top-0 z-50 glass border-b border-slate-800/80 px-4 lg:px-8 py-4">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-bold text-white shadow-lg shadow-blue-500/25">
+          E
+        </div>
+        <div>
+          <span class="font-bold text-lg tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400">EscrowX</span>
+          <span class="text-[10px] block font-mono text-blue-400 tracking-wider">SMART PAYMENTS</span>
+        </div>
+      </div>
+      <button id="connectBtn" onclick="connectWallet()" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs md:text-sm font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-blue-600/20 transition-all transform active:scale-95">
+        Connect Wallet
+      </button>
+    </div>
+  </nav>
+
+  <!-- Premium Hero Banner -->
+  <header class="relative pt-12 pb-8 px-4 text-center max-w-4xl mx-auto space-y-4">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium">
+      <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+      Decentralized Trust Protocol
+    </div>
+    <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-100 to-slate-400 leading-tight">
+      Secure & Transparent <br>
+      <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400">Freelance Escrow System</span>
+    </h1>
+    <p class="text-slate-400 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+      A blockchain-powered smart contract solution ensuring payment protection for both clients and freelancers.
+    </p>
+  </header>
+
+  <!-- Main Content Layout -->
+  <main class="max-w-4xl mx-auto px-4 pb-16 space-y-8">
+    
+    <!-- Section 1: Deploy New Contract -->
+    <section class="glass border border-slate-800/80 p-6 md:p-8 rounded-3xl shadow-2xl relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl pointer-events-none"></div>
+      
+      <div class="flex items-center justify-between border-b border-slate-800/80 pb-4 mb-6">
+        <div>
+          <h2 class="text-lg font-bold text-slate-100">1. Create New Escrow</h2>
+          <p class="text-xs text-slate-400">Deploy contract and deposit funds (Client)</p>
+        </div>
+        <span class="text-xs font-mono bg-blue-500/10 text-blue-400 px-3 py-1 rounded-lg border border-blue-500/20">Client Mode</span>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1.5">Freelancer Wallet Address</label>
+          <input type="text" id="freelancerAddr" placeholder="0x..." class="w-full bg-slate-900/90 border border-slate-800 rounded-xl p-3.5 text-sm font-mono focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1.5">Arbiter Wallet Address</label>
+          <input type="text" id="arbiterAddr" placeholder="0x..." class="w-full bg-slate-900/90 border border-slate-800 rounded-xl p-3.5 text-sm font-mono focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1.5">Escrow Amount (ETH)</label>
+          <input type="number" step="0.001" id="ethAmount" placeholder="e.g. 0.05" class="w-full bg-slate-900/90 border border-slate-800 rounded-xl p-3.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition">
+        </div>
+        <button onclick="deployEscrow()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold p-3.5 rounded-xl transition-all shadow-lg shadow-blue-600/25 active:scale-[0.99] text-sm">
+          Deploy & Deposit Funds
+        </button>
+      </div>
+    </section>
+
+    <!-- Section 2: Manage Deployed Contract -->
+    <section class="glass border border-slate-800/80 p-6 md:p-8 rounded-3xl shadow-2xl relative overflow-hidden">
+      <div class="flex items-center justify-between border-b border-slate-800/80 pb-4 mb-6">
+        <div>
+          <h2 class="text-lg font-bold text-slate-100">2. Contract Management</h2>
+          <p class="text-xs text-slate-400">Interact with an existing escrow contract</p>
+        </div>
+        <span class="text-xs font-mono bg-purple-500/10 text-purple-400 px-3 py-1 rounded-lg border border-purple-500/20">Control Panel</span>
+      </div>
+
+      <div class="space-y-5">
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1.5">Deployed Contract Address</label>
+          <input type="text" id="contractAddr" placeholder="0x..." class="w-full bg-slate-900/90 border border-slate-800 rounded-xl p-3.5 text-sm font-mono focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition">
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
+          <button onclick="callAction('releaseFunds')" class="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 p-3.5 rounded-xl text-sm font-semibold transition active:scale-95">
+            Release Payment
+          </button>
+          <button onclick="callAction('raiseDispute')" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 p-3.5 rounded-xl text-sm font-semibold transition active:scale-95">
+            Raise Dispute
+          </button>
+          <button onclick="callAction('refundClient')" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 p-3.5 rounded-xl text-sm font-semibold transition active:scale-95">
+            Refund Client
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Console Log Status -->
+    <div class="glass border border-slate-800/80 p-5 rounded-2xl flex items-center gap-3">
+      <div class="w-2.5 h-2.5 rounded-full bg-blue-500 animate-ping"></div>
+      <p id="status" class="text-xs font-mono text-blue-400 break-all">Connect your MetaMask wallet to start.</p>
+    </div>
+
+  </main>
+
+  <script>
+    let provider, signer, userAddress;
+
+    const ABI = [
+      "constructor(address _freelancer, address _arbiter) payable",
+      "function releaseFunds() public",
+      "function raiseDispute() public",
+      "function refundClient() public"
+    ];
+
+    const BYTECODE = "0x608060405234801561001057600080fd5b50604051610260380380610260833981016040528051915060208201519050806000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550816001806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550336002806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff16021790555050506101ba806100a66000396000f3fe";
+
+    async function connectWallet() {
+      if (window.ethereum) {
+        try {
+          provider = new ethers.providers.Web3Provider(window.ethereum);
+          await provider.send("eth_requestAccounts", []);
+          signer = provider.getSigner();
+          userAddress = await signer.getAddress();
+          
+          document.getElementById("connectBtn").innerText = userAddress.slice(0, 6) + "..." + userAddress.slice(-4);
+          log("Wallet Connected: " + userAddress);
+        } catch (err) {
+          log("Connection Error: " + err.message);
+        }
+      } else {
+        alert("MetaMask browser extension is not installed!");
+      }
+    }
+
+    async function deployEscrow() {
+      if (!signer) return alert("Please connect your wallet first!");
+
+      const freelancer = document.getElementById("freelancerAddr").value;
+      const arbiter = document.getElementById("arbiterAddr").value;
+      const ethVal = document.getElementById("ethAmount").value;
+
+      if (!freelancer || !arbiter || !ethVal) {
+        return alert("Please fill in all input fields!");
+      }
+
+      try {
+        log("Starting deployment process...");
+        const factory = new ethers.ContractFactory(ABI, BYTECODE, signer);
+        const contract = await factory.deploy(freelancer, arbiter, {
+          value: ethers.utils.parseEther(ethVal)
+        });
+
+        log("Transaction sent to blockchain... Please wait.");
+        await contract.deployed();
+
+        log("Contract deployed successfully! Contract Address: " + contract.address);
+        document.getElementById("contractAddr").value = contract.address;
+      } catch (err) {
+        log("Deployment failed: " + (err.reason || err.message));
+      }
+    }
+
+    async function callAction(funcName) {
+      if (!signer) return alert("Please connect your wallet first!");
+      
+      const contractAddress = document.getElementById("contractAddr").value;
+      if (!contractAddress) return alert("Please input the contract address!");
+
+      try {
+        log("Executing " + funcName + "...");
+        const contract = new ethers.Contract(contractAddress, ABI, signer);
+        const tx = await contract[funcName]();
+        log("Transaction submitted! Tx Hash: " + tx.hash);
+        await tx.wait();
+        log("Action executed successfully!");
+      } catch (err) {
+        log("Error: " + (err.reason || err.message));
+      }
+    }
+
+    function log(msg) {
+      document.getElementById("status").innerText = msg;
+    }
+  </script>
+</body>
+</html>
